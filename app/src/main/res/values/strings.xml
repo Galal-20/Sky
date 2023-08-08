@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Weather</string>
+    <string name="hope_you_a_nice_weather">Hope you a nice weather</string>
+    <string name="find_your_city">Find your city</string>
+    <string name="sunset">Sunset</string>
+    <string name="_00_00">00:00</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="wind">Wind Speed</string>
+    <string name="ooms">00:00 m/s</string>
+    <string name="sunny">Sunny</string>
+    <string name="condition">Condition</string>
+    <string name="sea">Sea</string>
+    <string name="_0000_hpa">0000 hpa</string>
+    <string name="humidity">Humidity</string>
+    <string name="_00">00 %</string>
+    <string name="cairo">Cairo</string>
+    <string name="api"><![CDATA[https://api.openweathermap.org/data/2.5/weather?q=cairo&appid=9bda4264b961f7ebb7a9e7c8f689a549]]></string>
+</resources>
