@@ -29,9 +29,9 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        getLocation()
         fetchWeatherApp("Egypt, EG")
         searchCity()
-        getLocation()
     }
 
     private fun getLocation() {
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
         val searchView = binding.searchView
         searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
+                if (!query.isNullOrBlank()) {
                     fetchWeatherApp(query)
                 }else{
                     Toast.makeText(this@MainActivity,"Wrong country",Toast.LENGTH_SHORT).show()
@@ -58,42 +58,52 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
     }
 
     private fun fetchWeatherApp(cityName: String) {
-        Retrofit.Builder()
+       val retrofit= Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/data/2.5/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiInterface::class.java)
-            .getWeatherDate(cityName,
-                "9bda4264b961f7ebb7a9e7c8f689a549",
-                "metric").enqueue(object :Callback<weatherApp>{
+
+        val response = retrofit.getWeatherDate(cityName, "9bda4264b961f7ebb7a9e7c8f689a549", "metric")
+
+            response.enqueue(object :Callback<weatherApp>{
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(call: Call<weatherApp>, response: Response<weatherApp>) {
-                val responseBody = response.body()
-                    val temp = responseBody?.main?.temp.toString()
-                        val hum = responseBody?.main?.humidity
-                        val seaLevel = responseBody?.main?.pressure
-                        val maxTemp = responseBody?.main?.temp_max
-                        val maxMini = responseBody?.main?.temp_min
-                        val windSpeed = responseBody?.wind?.speed
-                        val sunRise = responseBody?.sys?.sunrise?.toLong()
-                        val sunset = responseBody?.sys?.sunset?.toLong()
-                        val condition = responseBody?.weather?.firstOrNull()?.main?: "unknown"
+                    if (response.isSuccessful){
+                        val responseBody = response.body()
+                        if (responseBody != null){
+                            val temp = responseBody.main.temp.toString()
+                            val hum = responseBody.main.humidity
+                            val seaLevel = responseBody.main.pressure
+                            val maxTemp = responseBody.main.temp_max
+                            val maxMini = responseBody.main.temp_min
+                            val windSpeed = responseBody.wind.speed
+                            val sunRise = responseBody.sys.sunrise.toLong()
+                            val sunset = responseBody.sys.sunset.toLong()
+                            val condition = responseBody.weather.firstOrNull()?.main?: "unknown"
 
-                        binding.weather.text = condition
-                        binding.maxTemp.text = "Max Temp: $maxTemp °C"
-                        binding.miniTemp.text = "Min Temp: $maxMini °C"
-                        binding.humidity.text = "$hum %"
-                        binding.windSpeed.text = "$windSpeed m/s"
-                        binding.sunrise.text = time(sunRise!!)
-                        binding.sunsetT.text = time(sunset!!)
-                        binding.sea.text = "$seaLevel hpa"
-                        binding.condition.text = condition
-                        binding.temp.text = "$temp°C"
-                        binding.day.text = dayName()
-                        binding.date.text = date()
-                        binding.cityName.text = cityName
+                            binding.weather.text = condition
+                            binding.maxTemp.text = "Max Temp: $maxTemp °C"
+                            binding.miniTemp.text = "Min Temp: $maxMini °C"
+                            binding.humidity.text = "$hum %"
+                            binding.windSpeed.text = "$windSpeed m/s"
+                            binding.sunrise.text = time(sunRise)
+                            binding.sunsetT.text = time(sunset)
+                            binding.sea.text = "$seaLevel hpa"
+                            binding.condition.text = condition
+                            binding.temp.text = "$temp°C"
+                            binding.day.text = dayName()
+                            binding.date.text = date()
+                            binding.cityName.text = cityName
 
-                    changeImageWeather(condition)
+                            changeImageWeather(condition)
+                        }else {
+                            Toast.makeText(this@MainActivity, "Weather data not found for the specified city", Toast.LENGTH_SHORT).show()
+                        }
+                    }else{
+                        Toast.makeText(this@MainActivity, "Error retrieving weather data", Toast.LENGTH_SHORT).show()
+                    }
+
 
 
             }
@@ -147,14 +157,27 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
         return  simpleDateFormat.format((Date()))
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onSuccess(locations: ArrayList<Location>) {
         locations[0].accuracy
         val lat = locations[0].latitude
         val long = locations[0].longitude
         val g = Geocoder(this)
         val address = g.getFromLocation(lat,long,1)!!
-        address[0].locality.toString()
-        binding.cityName.text = address.toString()
+        if (address.isNotEmpty()){
+            val cityName = address[0].locality
+            if (cityName != null){
+                binding.cityName.text = cityName
+                fetchWeatherApp(cityName)
+            }else
+            {
+                binding.cityName.text = "Unknown City"
+            }
+        }else{
+            binding.cityName.text = "Unknown Location"
+        }
+
+
     }
     override fun onFailure(locationFailedEnum: AirLocation.LocationFailedEnum) {
         Snackbar.make(binding.sea,"check your permission",Snackbar.LENGTH_SHORT).show()
