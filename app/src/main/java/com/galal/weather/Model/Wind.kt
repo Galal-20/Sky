@@ -1,4 +1,4 @@
-package com.galal.weather
+package com.galal.weather.Model
 
 data class Wind(
     val deg: Int,

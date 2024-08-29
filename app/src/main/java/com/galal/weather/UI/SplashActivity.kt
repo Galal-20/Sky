@@ -1,4 +1,4 @@
-package com.galal.weather
+package com.galal.weather.UI
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +18,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            Intent(this,MainActivity::class.java).also {
+            Intent(this, MainActivity::class.java).also {
                 startActivity(it)
                 finish()
             }

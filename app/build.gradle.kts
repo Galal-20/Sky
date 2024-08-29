@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.galal.weather"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.galal.weather"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -51,12 +51,24 @@ dependencies {
     implementation("com.daimajia.androidanimations:library:2.4@aar")
 
     implementation ("com.airbnb.android:lottie:6.1.0")
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation ("com.android.volley:volley:1.2.1")
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.squareup.picasso:picasso:2.8")
     implementation ("com.github.mumayank:AirLocation:2.5.2")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+
+
+    // ViewModel and LiveData
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.4")
+
+    implementation("androidx.activity:activity-ktx:1.7.2") // Use the latest version available
+
 
 
 

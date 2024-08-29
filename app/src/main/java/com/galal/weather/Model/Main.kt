@@ -1,4 +1,4 @@
-package com.galal.weather
+package com.galal.weather.Model
 
 data class Main(
     val feels_like: Double,
